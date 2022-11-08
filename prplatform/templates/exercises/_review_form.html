@@ -1,0 +1,69 @@
+{% load crispy_forms_tags %}
+
+<div class="mt-4">
+  <h3>Questions</h3>
+  <hr></hr>
+
+  {% if not forms %}
+    The teacher has not configured any questions. You cannot make a submission.
+  {% else %}
+
+  <form enctype="multipart/form-data"
+        id="review_form"
+        class="form-horizontal needs-validation"
+        method="post"
+        action="{% if APLUS_POST_URL %}{{ APLUS_POST_URL }}{% else %}{{ object.get_absolute_url }}{% endif %}">
+
+    {% csrf_token %}
+
+    <fieldset id="choose_questions_fieldset" {% if disable_form %}disabled{% endif %}>
+    <input id="choose_reviewable_pk" type="hidden" name="choice" value="{{ reviewable.pk }}">
+
+    {% for form in forms %}
+      {{ form | crispy }}
+
+      {% if form.errors %}
+        <div class="alert alert-danger">
+        {% for field in form %}
+            {% for error in field.errors %}
+                <li>
+                  {% if field != '__all__' %}
+                    <strong>{{ field.label }}:</strong>
+                  {% endif %}
+                  {{ error }}
+                </li>
+            {% endfor %}
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    </fieldset>
+
+
+    {% include "./_group_enroll_info_box.html" %}
+
+    <hr />
+
+    <div class="control-group">
+      <div class="controls">
+        <button type="button" id="review_submit_fake_button" class="btn btn-success"
+                                                 {% if disable_form %}disabled{% endif %}
+                                                 >Submit answer</button>
+      </div>
+      <div class="controls mt-4" id="review_submit_confirmation_container" style="display:none;">
+        Are you really sure?<br>
+        You cannot make changes to your peer-review after submitting.<br>
+        <button type="submit" id="review_submit_real_button" class="btn btn-success mt-4">Submit</button>
+      </div>
+    </div>
+  </form>
+
+  {% endif %}
+</div>
+
+  {% load static %}
+  {% block extra_js %}
+    <script src="{% static 'js/reviewexercise_detail.js' %}"></script>
+  {% endblock extra_js %}
+

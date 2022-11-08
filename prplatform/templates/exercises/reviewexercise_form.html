@@ -1,0 +1,62 @@
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb object.course.code object.course.get_absolute_url %}
+    {% breadcrumb "Peer-review exercise" ""%}
+    {% breadcrumb object.name object.get_absolute_url %}
+    {% breadcrumb "Edit" "" %}
+{% endblock %}
+
+{% block title %}Update exercise details{% endblock %}
+
+{% block content %}
+
+  {% include "../tabs.html" with tab="edit" %}
+
+  <style>
+    .question-form {
+      padding: 4px;
+      margin-bottom:10px;
+      margin-left:10px;
+    }
+
+    .question-form:nth-child(even) {
+      background: #cfd8dc;
+    }
+    .question-form:nth-child(odd) {
+      background: #d3d3d345;
+    }
+
+  </style>
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <form class="form-horizontal" method="post" action="{% url 'courses:update-review-exercise' course.base_course.url_slug course.url_slug object.pk %}">
+        {% csrf_token %}
+
+        {{ form|crispy }}
+
+        <div class="control-group mt-4">
+          <div class="controls">
+            <a class="btn btn-warning mr-4" href="{{ object.get_absolute_url }}">Cancel</a>
+            <button type="submit" class="btn btn-success">Update</button>
+            <a class="btn btn-danger float-right" href="{% url 'courses:delete-review-exercise' course.base_course.url_slug course.url_slug object.pk %}">Delete</a>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+
+  {% load static %}
+  {% block extra_js %}
+    <script src="{% static 'js/reviewexercise.js' %}"></script>
+  {% endblock extra_js %}
+
+
+{% endblock %}

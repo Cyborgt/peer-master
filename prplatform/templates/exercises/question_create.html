@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb course.code course.get_absolute_url %}
+    {% breadcrumb "Peer-review exercise" ""%}
+    {% breadcrumb exercise.name exercise.get_absolute_url %}
+    {% breadcrumb "Questions" ""%}
+    {% breadcrumb "Create" "" %}
+{% endblock %}
+
+{% block title %}Question create{% endblock %}
+
+{% block content %}
+
+  {% include "../tabs.html" with tab="questions" type="original" object=exercise %}
+
+  <h1>Create question</h1>
+  {% include "./_question_info.html" %}
+  <form class="form-horizontal" method="post" action="">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="control-group">
+      <div class="controls d-flex justify-content-between">
+        <a class="btn btn-warning mr-4" href="{{ exercise.get_question_url }}">Cancel</a>
+        <button type="submit" class="btn btn-success">Create</button>
+      </div>
+    </div>
+  </form>
+
+  <br>
+  {% include "./_question_choices_examples.html" %}
+
+{% endblock %}

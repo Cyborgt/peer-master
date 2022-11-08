@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb_for exercise.get_absolute_url %}
+        Submission exercise: {{ exercise.name }}
+    {% endbreadcrumb_for %}
+    {% breadcrumb "List" "" %}
+{% endblock %}
+{% block title %}Submissions{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+{% endblock css %}
+
+{% block content %}
+
+  {% include "../tabs.html" with tab="submissions" type="original" object=exercise %}
+
+  <div class="row">
+    <div class="col-md-12">
+      <table id="originalsubmissionlist-table" class="table table-striped">
+        <thead>
+          <tr>
+            <th>View</th>
+            <th>Submitter</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        {% if object_list %}
+        <div class="alert alert-warning d-md-inline-block">
+          {% if not teacher %}
+          The last submission will appear in peer-reviews.
+          {% else %}
+          If someone has made multiple submissions, the last one will appear in peer-reviews.
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <tbody>
+          {% for origsub in object_list %}
+            <tr scope="row">
+              <td>
+                <a role="button" class="btn btn-outline-secondary btn-sm" href="{{ origsub.get_absolute_url }}">
+                  View
+                </a>
+              </td>
+              <td>
+                {{ origsub.submitter }}
+              </td>
+              <td>
+                  {{ origsub.created | date:"SHORT_DATETIME_FORMAT" }}
+              </td>
+              <td>
+                {{ origsub.state }}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      var table = $('#originalsubmissionlist-table').DataTable({
+        "paging": false
+      });
+    });
+  </script>
+{% endblock javascript %}
+
+

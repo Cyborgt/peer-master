@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block title %}Statistics{% endblock %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb course.code course.get_absolute_url %}
+    {% breadcrumb "Peer-review exercise" ""%}
+    {% breadcrumb re.name re.get_absolute_url %}
+    {% breadcrumb "Statistics" "" %}
+{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+{% endblock css %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-md-12">
+    {% include "../tabs.html" with tab="statistics" object=re %}
+      <a class="btn btn-sm btn-success mt-3 mb-4" href="?format=csv">Download summary CSV</a>
+
+      <p>
+        <strong>How is "done" defined for different ReviewExercise types?</strong>
+        <ul>
+          <li>GROUP: when the student has peer-reviewed everyone in the group</li>
+          <li>CHOOSE: not available</li>
+          <li>RANDOM: not available</li>
+        </ul>
+      </p>
+
+      <table id="stats-table" class="table table-sm table-hover table-bordered">
+        <thead>
+          <tr>
+            {% for header in stats_headers %}
+            <th scope="col">{{ header }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+        {% for row in stats.values %}
+        <tr scope="row" {% if row.done == True %} style="background: #28a7451c;" {% endif %}>
+            <td>
+              {{ row.done }}
+            </td>
+
+            <td>
+              <a href="{{ row.orig_sub.get_absolute_url }}">{{ row.orig_sub.submitter }}</a>
+            </td>
+
+            <td>
+              {% for rev_sub in row.reviews_by %}
+                <a href="{{ rev_sub.get_absolute_url }}">{{ rev_sub.reviewed_submission.submitter }}</a>{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </td>
+
+            <td>
+            {% for review in row.reviews_for %}
+              <a href="{{ review.get_absolute_url }}">{{ review.submitter }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            </td>
+
+            {% for avg in row.numerical_avgs %}
+              <td>{{ avg | floatformat:2 }}</td>
+            {% endfor %}
+
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      {% if re.type == 'RANDOM' %}
+
+      <h3 class="mt-4">Review locks</h3>
+      <p>
+         This is a list of "review locks" the system has created. Whenever a student loads the review page,
+         a lock is automatically created. This prevents future page loads changing the thing that is being
+         reviewed by the student, instead the student always gets the same thing for review until the review
+         is complete. After completing the review the system deletes the review lock.<br>
+      </p>
+      {% include "./_reviewlock_stats.html" %}
+      {% endif %}
+    </div>
+  </div>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+  <script>
+    window.addEventListener('load', function() {
+      var table = $('#stats-table').DataTable({
+        "paging": false,
+        "order": [[ 1, 'asc' ]]
+      });
+
+      $('a.toggle-vis').on( 'click', function (e) {
+        e.preventDefault();
+
+        // Get the column API object
+        var column = table.column( $(this).attr('data-column') );
+
+        // Toggle the visibility
+        column.visible( ! column.visible() );
+      });
+    });
+  </script>
+{% endblock javascript %}
+

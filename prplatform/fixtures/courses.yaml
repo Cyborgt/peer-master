@@ -1,0 +1,292 @@
+
+- model: users.user
+  pk: 1
+  fields:
+    email: prp@prp.fi
+    username: prp
+    # password is: prp1234
+    password: "argon2$argon2i$v=19$m=512,t=2,p=2$dkY2QUM1d3dqMWI4$HFxq2dnp8307ha5kpuVE9w"
+    is_superuser: True
+    is_staff: True
+    is_active: True
+
+- model: users.user
+  pk: 2
+  fields:
+    email: teacher1@prp.fi
+    username: teacher1
+    # password is: teacher
+    password: "argon2$argon2i$v=19$m=512,t=2,p=2$S2UwYzZvVG1iNFZ4$MYTZWFzhwhqAxsnaZ8Gabw"
+    is_active: True
+
+- model: users.user
+  pk: 3
+  fields:
+    email: student1@prp.fi
+    username: student1
+    # password is: student
+    password: "argon2$argon2i$v=19$m=512,t=2,p=2$ZDZXaXVHeE10bmg2$X5G9KGpbQS+Fws8vpALz1A"
+    is_active: True
+
+- model: users.user
+  pk: 4
+  fields:
+    email: student2@prp.fi
+    username: student2
+    # password is: student
+    password: "argon2$argon2i$v=19$m=512,t=2,p=2$ZDZXaXVHeE10bmg2$X5G9KGpbQS+Fws8vpALz1A"
+    is_active: True
+
+- model: users.user
+  pk: 5
+  fields:
+    email: student3@prp.fi
+    username: student3
+    # password is: student
+    password: "argon2$argon2i$v=19$m=512,t=2,p=2$ZDZXaXVHeE10bmg2$X5G9KGpbQS+Fws8vpALz1A"
+    is_active: True
+
+- model: users.user
+  pk: 6
+  fields:
+    email: student4@prp.fi
+    username: student4
+    # password is: student
+    password: "argon2$argon2i$v=19$m=512,t=2,p=2$ZDZXaXVHeE10bmg2$X5G9KGpbQS+Fws8vpALz1A"
+    is_active: True
+
+- model: users.user
+  pk: 7
+  fields:
+    email: student5@prp.fi
+    username: student5
+    # password is: student
+    password: "argon2$argon2i$v=19$m=512,t=2,p=2$ZDZXaXVHeE10bmg2$X5G9KGpbQS+Fws8vpALz1A"
+    is_active: True
+
+- model: users.user
+  pk: 8
+  fields:
+    email: student6@prp.fi
+    username: student6
+    # password is: student
+    password: "argon2$argon2i$v=19$m=512,t=2,p=2$ZDZXaXVHeE10bmg2$X5G9KGpbQS+Fws8vpALz1A"
+    is_active: True
+
+- model: courses.basecourse
+  pk: 1
+  fields:
+    name: Programming 1
+    code: TIE-02100
+    url_slug: prog1
+    school: TTY
+    teachers: [ ["teacher1@prp.fi"] ]
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+
+- model: courses.basecourse
+  pk: 2
+  fields:
+    name: Programming 2
+    code: TIE-02200
+    url_slug: prog2
+    school: TTY
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+
+- model: courses.course
+  pk: 1
+  fields:
+    base_course: [ "TIE-02100" ]
+    year: 2018
+    code: TIE-02100-1
+    url_slug: F2018
+    start_date: 2018-01-01
+    end_date: 2018-12-31
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+    hidden: False
+
+- model: courses.enrollment
+  pk: 1
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    student: ["student1@prp.fi"]
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+
+- model: courses.enrollment
+  pk: 2
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    student: ["student2@prp.fi"]
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+
+- model: courses.enrollment
+  pk: 3
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    student: ["student3@prp.fi"]
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+
+- model: courses.enrollment
+  pk: 4
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    student: ["student4@prp.fi"]
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+
+- model: courses.enrollment
+  pk: 5
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    student: ["student5@prp.fi"]
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+
+- model: courses.enrollment
+  pk: 6
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    student: ["student6@prp.fi"]
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+
+- model: exercises.submissionexercise
+  pk: 1
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    name: T1 TEXT
+    description: Say bla bla bla and add this and that
+    type: "TEXT"
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+    opening_time: 2018-01-01 00:00+02:00
+    closing_time: 2025-01-01 00:00+02:00
+
+- model: exercises.submissionexercise
+  pk: 2
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    name: T2 FILE SUBMISSION
+    description: Sum this and that
+    type: "FILE_UPLOAD"
+    accepted_filetypes: "pdf"
+    upload_instructions: Upload the final Python code into the system
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+    opening_time: 2018-01-01 00:00+02:00
+    closing_time: 2025-01-01 00:00+02:00
+
+- model: exercises.submissionexercise
+  pk: 3
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    name: T3 Plus submission
+    description: Submission is done in Plussa
+    type: "APLUS"
+    upload_instructions: Upload the final Python code into the system
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+    opening_time: 2018-01-01 00:00+02:00
+    closing_time: 2025-01-01 00:00+02:00
+
+- model: exercises.submissionexercise
+  pk: 4
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    name: T4 *closed*
+    description: Say bla bla bla and add this and that
+    type: "TEXT"
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+    opening_time: 2018-01-01 00:00+02:00
+    closing_time: 2018-06-30 00:00+02:00
+
+- model: exercises.submissionexercise
+  pk: 5
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    name: T5 STATE
+    description: Say bla bla bla and add this and that
+    type: "TEXT"
+    use_states: true
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+    opening_time: 2018-01-01 00:00+02:00
+    closing_time: 2025-06-30 00:00+02:00
+
+
+- model: exercises.reviewexercise
+  pk: 1
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    name: T1 TEXT REVIEW
+    reviewable_exercise: 1
+    question_order: [2, 1]
+    questions: [1, 2]
+    description: Sum this and that
+    type: "RANDOM"
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+    opening_time: 2018-01-01 00:00+02:00
+    closing_time: 2025-01-01 00:00+02:00
+
+- model: exercises.reviewexercise
+  pk: 2
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    name: T2 FILE REVIEW
+    reviewable_exercise: 2
+    question_order: [1]
+    questions: [1]
+    description: Sum this and that
+    type: "RANDOM"
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+    opening_time: 2018-01-01 00:00+02:00
+    closing_time: 2025-01-01 00:00+02:00
+
+- model: exercises.reviewexercise
+  pk: 3
+  fields:
+    course: ["TIE-02100", "TIE-02100-1"]
+    name: T5 STATE REVIEW
+    reviewable_exercise: 5
+    question_order: [1]
+    questions: [1]
+    description: Sum this and that
+    type: "RANDOM"
+    created: 2018-01-01 00:00+02:00
+    modified: 2018-01-01 00:00+02:00
+    opening_time: 2018-01-01 00:00+02:00
+    closing_time: 2025-01-01 00:00+02:00
+
+- model: exercises.question
+  pk: 1
+  fields:
+    question_text: Midi
+    choices: []
+    course: ["TIE-02100", "TIE-02100-1"]
+    hide_from_receiver: False
+
+- model: exercises.question
+  pk: 2
+  fields:
+    question_text: Score the work
+    choices: [["1", "1"], ["2", "2"], ["3", "3"]]
+    course: ["TIE-02100", "TIE-02100-1"]
+    hide_from_receiver: True
+
+- model: exercises.question
+  pk: 3
+  fields:
+    question_text: Upload a txt file
+    choices: []
+    accepted_filetypes: "txt"
+    course: ["TIE-02100", "TIE-02100-1"]
+    hide_from_receiver: False
+

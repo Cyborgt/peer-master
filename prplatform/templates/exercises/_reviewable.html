@@ -1,0 +1,32 @@
+{% if not chooseMode %}
+<div class="collapse show" id="collapse-reviewable">
+
+  <div style="background:lightyellow;"
+       class="card card-body mb-4">
+    <h5>To peer-review:</h5>
+
+      {% if not reviewable %}
+
+        Not available for some reason. Something went wrong??
+
+      {% elif reviewable.text %}
+
+        {{ reviewable.text | linebreaks }}
+
+      {% elif filecontents %}
+
+        {% load pygmentify %}
+        {% pygment %}
+          <!-- TODO: general implementation for any contents -->
+          <pre lang="python"
+               class="codebox">{{ filecontents }}</pre>
+        {% endpygment %}
+
+      {% else %}
+      <a href="{{ reviewable.get_file_download_url }}{% if LTI_DL_TOKEN %}?dl_token={{ LTI_DL_TOKEN }}{% endif %}">
+          Click here to download the file to peer-review
+        </a>
+      {% endif %}
+  </div>
+</div>
+{% endif %}

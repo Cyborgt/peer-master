@@ -1,0 +1,31 @@
+{% extends "account/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}Sign In{% endblock %}
+
+{% block inner %}
+
+<h1>Sign In</h1>
+
+<!-- TODO: make this configurable through local_settings.py -->
+<a class="btn btn-primary mt-2 mb-4" href="/shibboleth-redirect/">Sign in with TTY credentials</a>
+
+<br><br>
+Use the button *above*.
+
+<br><br><br>
+If the superadmin has given you a _local_ account to this system, click <a data-toggle="collapse" href="#collapseLocal">here</a>.
+<br><br>
+<div class="collapse" id="collapseLocal">
+    <form class="login" method="POST" action="{% url 'account_login' %}">
+      {% csrf_token %}
+      {{ form|crispy }}
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      <a class="button secondaryAction" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+      <button class="primaryAction btn btn-primary" type="submit">Sign In</button>
+    </form>
+</div>
+
+{% endblock %}

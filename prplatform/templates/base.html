@@ -1,0 +1,62 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html {% if request.LTI_MODE %}class="bs4" {% endif %}lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}prplatform{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block css %}
+    {% if request.LTI_MODE %}
+        <!-- BASE_EMBEDDED -->
+        <link href="{% static 'css/bootstrap-ns.css' %}" rel="stylesheet" data-aplus="yes">
+    {% else %}
+        <link href="{% static 'css/bootstrap-4.1.3.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/project.css' %}" rel="stylesheet">
+        <link href="{% static 'css/pygmentify.css' %}" rel="stylesheet">
+    {% endif %}
+    {% endblock %}
+
+  </head>
+
+  <body>
+
+    {% if not request.LTI_MODE %}
+        {% include 'navbar.html' %}
+    {% endif %}
+
+    {% with lti=request.LTI_MODE %}
+    <div class="{% if lti %}bs4 bs4-body{% else %}col-md-9 ml-sm-auto col-lg-10 px-4{% endif %}">
+        <div {% if not lti %}id="main"{% endif %}class="container mt-4 {% if not lti %}ml-0{% endif %}">
+        {% include 'messages.html' %}
+
+        {% if not lti %}
+            {% load django_bootstrap_breadcrumbs %}
+            {% block breadcrumbs %}
+              {% if course %}
+                {% breadcrumb course.code course.get_absolute_url %}
+              {% endif %}
+            {% endblock %}
+            {% block breads %}
+                {% render_breadcrumbs %}
+            {% endblock %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock content %}
+        </div>
+    </div>
+
+    {% if not lti %}
+      {% block javascript %}
+        <script src="{% static 'js/jquery-3.3.1.slim.min.js' %}"></script>
+        <script src="{% static 'js/popper-1.14.3.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-4.1.3.min.js' %}"></script>
+        <script src="{% static 'js/project.js' %}"></script>
+      {% endblock javascript %}
+      {% include 'doorbell-feedback.html' %}
+    {% endif %}
+    {% endwith %}
+  </body>
+</html>

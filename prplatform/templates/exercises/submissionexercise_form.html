@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Update exercise details{% endblock %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb_for object.get_absolute_url %}
+        Submission exercise: {{ object.name }}
+    {% endbreadcrumb_for %}
+    {% breadcrumb "Edit" "" %}
+{% endblock %}
+
+{% block content %}
+
+  {% include "../tabs.html" with tab="edit" type="original" %}
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <form class="form-horizontal" method="post"
+            action="{% url 'courses:update-submission-exercise' course.base_course.url_slug course.url_slug object.pk %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="control-group">
+          <div class="controls">
+            <a class="btn btn-warning mr-4" href="{{ object.get_absolute_url }}">Cancel</a>
+            <button type="submit" class="btn btn-success">Update</button>
+            <a class="btn btn-danger float-right" href="{% url 'courses:delete-submission-exercise' course.base_course.url_slug course.url_slug object.pk %}">Delete</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% load static %}
+  {% block extra_js %}
+    <script src="{% static 'js/submissionexercise.js' %}"></script>
+  {% endblock extra_js %}
+
+{% endblock %}

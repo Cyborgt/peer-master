@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb_for exercise.get_absolute_url %}
+        Submission exercise: {{ exercise.name }}
+    {% endbreadcrumb_for %}
+    {% breadcrumb "Deviations" ""%}
+{% endblock %}
+{% block title %}Deviations{% endblock %}
+
+{% block content %}
+
+  {% include "../tabs.html" with tab="deviations" type="original" object=exercise %}
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <p>Here you can give students personal deadlines or extra submissions</p>
+
+      <a class="btn btn-sm btn-primary mt-2 mb-4"
+         href="{{ exercise.get_deviations_create_url }}">
+        Add deviation
+      </a>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Student|Group</th>
+            <th scope="col">Extra submissions</th>
+            <th scope="col">Personal deadline</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+
+      {% for d in object_list %}
+        <tr>
+          <td>{% if d.group %} {{ d.group }} {% else %} {{ d.user }} {% endif %}</td>
+          <td>{{ d.extra_submissions }}</td>
+          <td>{{ d.new_deadline | date:"SHORT_DATETIME_FORMAT" }}</td>
+          <td>
+            <form class="ml-auto" action="{{ d.get_delete_url }}" method="GET">
+              {% csrf_token %}
+              <input type="submit" class="btn btn-sm btn-danger" value="DELETE">
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+{% endblock content %}
+

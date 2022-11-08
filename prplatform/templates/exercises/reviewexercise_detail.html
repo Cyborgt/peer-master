@@ -1,0 +1,74 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% load django_bootstrap_breadcrumbs %}
+{% load exercise_filters %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb object.course.code object.course.get_absolute_url %}
+    {% breadcrumb "Peer-review exercise" ""%}
+    {% breadcrumb object.name object.get_absolute_url %}
+{% endblock %}
+
+{% block content %}
+
+  {% if not lti %}
+  {% include "../tabs.html" with tab="exercise" %}
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <h2>{{ object.name }}</h2>
+
+      <div style="float:none;" class="mb-4">
+        <div class="alert alert-warning ml-3 mr-3">
+          {{ object|my_submission_count:user }} / {{ object.min_submission_count }} peer-reviews completed.
+        </div>
+        {% if not lti %}
+          <p class="font-italic">
+            {% if object.type != 'GROUP' %}
+            In this exercise you're peer-reviewing other students' submissions to the exercise
+              <a href="{{ object.reviewable_exercise.get_absolute_url }}">
+                {{ object.reviewable_exercise.name }}
+              </a>
+            {% else %}
+            In this exercise you're peer-reviewing other members in your own group.
+            {% endif %}
+          </p>
+        {% endif %}
+        {% include "./_open_times.html" %}
+        {% include "./_re_errormsgs.html" %}
+
+        <hr />
+
+        {{ object.description | linebreaks }}
+      </div>
+
+
+      {% if show_content_to_review %}
+
+        {% include "./_choose_form.html" %}
+
+        {% if not chooseForm and not reviewable %}
+          <div id="no-submissions-for-peer-review" class="alert alert-warning ml-3 mr-3">
+            Not a thing was found to be reviewed :-| You cannot make this peer-review just yet.
+          </div>
+        {% else %}
+          {% include "./_reviewable.html" with chooseMode=chooseForm %}
+        {% endif %}
+
+      {% endif %}
+
+      {% include "./_review_form.html" %}
+      {% include "./_submit_as_student.html" %}
+    </div>
+  </div>
+  {% if lti %}
+    {% block extra_js %}
+      <script src="{% static 'js/embedded_view_bootstrap_fix.js' %}"></script>
+    {% endblock extra_js %}
+  {% endif %}
+{% endblock content %}
+

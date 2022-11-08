@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block title %}Submissions{% endblock %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb course.code course.get_absolute_url %}
+    {% breadcrumb "Peer-review exercise" ""%}
+    {% breadcrumb exercise.name exercise.get_absolute_url %}
+    {% breadcrumb "List" "" %}
+{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+{% endblock css %}
+
+{% block content %}
+
+
+  {% if my_mode %}
+  {% include "../tabs.html" with tab="submissions_me" object=exercise %}
+  {% else %}
+  {% include "../tabs.html" with tab="submissions" object=exercise %}
+  {% endif %}
+  <div class="row">
+    <div class="col-md-12">
+
+      {% if reviews_available_date_in_future %}
+      Peer-reviews will be available after {{ exercise.show_reviews_after_date }}<br>
+      {% endif %}
+
+      {% if needs_to_complete_more_reviews %}
+      Peer-reviews for you will be available after completing {{ exercise.min_submission_count }}
+      peer-reviews yourself.<br>
+      {% endif %}
+
+      {% if my_mode and exercise.show_reviews_only_to_teacher %}
+      In this peer-review exercise, the peer-reviews will only be visible to the teachers of the course.
+      {% endif %}
+
+      {% if not reviews_available_date_in_future and not needs_to_complete_more_reviews %}
+
+      <table id="reviewsubmissionlist-table" class="table table-striped">
+        <thead>
+          <tr>
+            <th>View</th>
+            {% if show_parties %}
+            <th>Reviewer</th>
+            {% endif %}
+            {% if show_parties %}
+            <th>Reviewed</th>
+            {% endif %}
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for rev_sub in object_list %}
+              <tr scope="row">
+                <td>
+                  <a role="button" class="btn btn-outline-secondary btn-sm" href="{{ rev_sub.get_absolute_url }}">
+                    View
+                  </a>
+                </td>
+                {% if show_parties %}
+                <td>
+                  {{ rev_sub.submitter }}
+                </td>
+                {% endif %}
+                {% if show_parties %}
+                <td>
+                    {{ rev_sub.reviewed_submission.submitter }}
+                </td>
+                {% endif %}
+                <td>
+                  {{ rev_sub.created | date:"SHORT_DATETIME_FORMAT" }}
+                </td>
+              </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+
+      {% endif %}
+
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      var table = $('#reviewsubmissionlist-table').DataTable({
+        "paging": false
+      });
+    });
+  </script>
+{% endblock javascript %}

@@ -1,0 +1,106 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb object.course.code object.course.get_absolute_url %}
+    {% breadcrumb "Peer-review exercise" ""%}
+    {% breadcrumb object.exercise.name object.exercise.get_absolute_url %}
+    {% breadcrumb "List" "courses:submissions:review-list" object.course.base_course.url_slug object.course.url_slug object.exercise.pk %}
+    {% breadcrumb "Submission" "" %}
+{% endblock %}
+
+{% block content %}
+  {% if receiver %}
+  {% include "../tabs.html" with tab="submissions_me" object=object.exercise %}
+  {% else %}
+  {% include "../tabs.html" with tab="submissions" object=object.exercise %}
+  {% endif %}
+
+  <div class="row">
+    <div class="col-sm-12">
+      <h4>Peer-review to exercise <a class="font-italic" href="{{ object.get_absolute_url }}">{{ object.exercise.name }}</a></h4>
+
+
+      <div class="shadow p-3 mb-5 bg-white rounded">
+
+        {% if teacher %}
+        <a href="{{ object.get_delete_url }}"
+           class="btn btn-sm btn-danger float-right">Delete</a>
+        {% endif %}
+
+        {% if not receiver %}
+        <strong>Submitter:</strong> {{ object.submitter_user }}<br>
+
+          {% if object.submitter_group %}
+          <strong>Submitter group:</strong> {{ object.submitter_group }}<br>
+          {% endif %}
+
+        {% endif %}
+
+        <strong>Review time:</strong> {{ object.created }}<br>
+
+        {% if object.exercise.type != 'GROUP' %}
+        {% if teacher or receiver %}
+          <strong>Reviewed submission:</strong>
+          <a href="{{ object.reviewed_submission.get_absolute_url }}">
+            {{ object.reviewed_submission }}
+          </a><br>
+        {% endif %}
+        {% endif %}
+
+        {% if object.exercise.type != 'RANDOM' and not receiver %}
+          {% if object.reviewed_submission.submitter_group %}
+            <strong>Reviewed group:</strong>
+            {{ object.reviewed_submission.submitter_group }}
+          {% else %}
+            <strong>Reviewed student:</strong>
+            {{ object.reviewed_submission.submitter_user }}
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <div class="shadow p-3 mb-5 bg-white rounded">
+        <h3>Peer-review content:</h3>
+        {% if not qa_list %}
+        <b><i>All answers to the peer-review questions are only shown to the teacher. There's nothing here.</i></b>
+        {% endif %}
+          {% for answer in qa_list %}
+            <div class="mt-4 p-2" style="border: 1px dashed grey;">
+              Question: <b>{{ answer.question.question_text }}</b>
+              <br>
+              Answer:<br>
+              <div class="ml-4">
+                {% if answer.value_text %}
+                    {{ answer.value_text | linebreaks }}
+                {% elif answer.value_choice %}
+                    {{ answer.get_choice_question_value }}
+                {% else %}
+                    <a href="{{ answer.get_file_download_url }}">Click here to download the answer file</a>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+      </div>
+
+      {% if teacher %}
+
+        <h3>Other peer-reviews of the same original submission:</h3>
+        <i>(Only teacher sees this)</i>
+        {% for re in object.reviewed_submission.reviews.all  %}
+          {% if re.pk != object.pk %}
+          <div class="list-group-item">
+            <a href="{{ re.get_absolute_url }}">{{ re  }}</a>
+          </div>
+          {% endif %}
+        {% endfor %}
+
+      {% endif %}
+
+
+    </div>
+  </div>
+{% endblock content %}
+

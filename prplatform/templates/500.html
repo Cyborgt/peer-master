@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error{% endblock %}
+
+{% block content %}
+<h1>Ooops!!! 500 Internal Server Error</h1>
+<p>
+  This error was automatically tracked. If the service keeps giving you errors,
+  please do not hesitate to contact the admin at
+  {% if contact_email %}{{ contact_email }}{% else %}ADMIN_CONTACT_EMAIL{% endif %}. Thanks!
+</p>
+{% endblock content %}
+
+
